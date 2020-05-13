@@ -25,13 +25,13 @@ import (
 
 	gcli "github.com/heketi/heketi/client/api/go-client"
 	gapi "github.com/heketi/heketi/pkg/glusterfs/api"
-	"github.com/kubernetes-sigs/sig-storage-lib-external-provisioner/controller"
-	"github.com/kubernetes-sigs/sig-storage-lib-external-provisioner/gidallocator"
-	"github.com/kubernetes-sigs/sig-storage-lib-external-provisioner/util"
+	"sigs.k8s.io/sig-storage-lib-external-provisioner/controller"
+	"sigs.k8s.io/sig-storage-lib-external-provisioner/gidallocator"
+	"sigs.k8s.io/sig-storage-lib-external-provisioner/util"
 	"github.com/pborman/uuid"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
-	"k8s.io/apimachinery/pkg/api/resource"
+	//"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/wait"
 	"k8s.io/client-go/kubernetes"
@@ -39,7 +39,7 @@ import (
 	"k8s.io/client-go/tools/clientcmd"
 	"k8s.io/client-go/util/retry"
 	"k8s.io/klog"
-	"k8s.io/kubernetes/pkg/volume"
+	//"k8s.io/kubernetes/pkg/volume"
 )
 
 const (
@@ -69,7 +69,7 @@ type glusterfileProvisioner struct {
 	identity string
 	provisionerConfig
 	allocator gidallocator.Allocator
-	options   controller.VolumeOptions
+	options   controller.ProvisionOptions
 }
 
 type provisionerConfig struct {
@@ -133,11 +133,11 @@ func (p *glusterfileProvisioner) annotatePVC(ns string, name string, updates map
 }
 
 // Provision creates a storage asset and returns a PV object representing it.
-func (p *glusterfileProvisioner) Provision(options controller.VolumeOptions) (*v1.PersistentVolume, error) {
+func (p *glusterfileProvisioner) Provision(options controller.ProvisionOptions) (*v1.PersistentVolume, error) {
 
 	sourceVolID := ""
 	volID := ""
-	var glusterfs *v1.GlusterfsVolumeSource
+	var glusterfs *v1.GlusterfsPersistentVolumeSource
 
 	smartclone := true
 	if options.PVC.Spec.Selector != nil {
@@ -151,7 +151,7 @@ func (p *glusterfileProvisioner) Provision(options controller.VolumeOptions) (*v
 	klog.V(1).Infof("VolumeOptions %v", options)
 	p.options = options
 	gidAllocate := true
-	for k, v := range options.Parameters {
+	for k, v := range options.StorageClass.Parameters {
 		switch dstrings.ToLower(k) {
 		case "smartclone":
 			smartclone = dstrings.ToLower(v) == "true"
@@ -178,7 +178,7 @@ func (p *glusterfileProvisioner) Provision(options controller.VolumeOptions) (*v
 
 	}
 
-	cfg, parseErr := p.parseClassParameters(options.Parameters, p.client)
+	cfg, parseErr := p.parseClassParameters(options.StorageClass.Parameters, p.client)
 
 	if parseErr != nil {
 		return nil, fmt.Errorf("failed to parse storage class parameters: %v", parseErr)
@@ -268,7 +268,7 @@ func (p *glusterfileProvisioner) Provision(options controller.VolumeOptions) (*v
 			},
 		},
 		Spec: v1.PersistentVolumeSpec{
-			PersistentVolumeReclaimPolicy: options.PersistentVolumeReclaimPolicy,
+			PersistentVolumeReclaimPolicy: *options.StorageClass.ReclaimPolicy,
 			AccessModes:                   options.PVC.Spec.AccessModes,
 			VolumeMode:                    &mode,
 			Capacity: v1.ResourceList{
@@ -283,7 +283,7 @@ func (p *glusterfileProvisioner) Provision(options controller.VolumeOptions) (*v
 	return pv, nil
 }
 
-func (p *glusterfileProvisioner) createVolumeClone(sourceVolID string, config *provisionerConfig) (r *v1.GlusterfsVolumeSource, size int, volID string, err error) {
+func (p *glusterfileProvisioner) createVolumeClone(sourceVolID string, config *provisionerConfig) (r *v1.GlusterfsPersistentVolumeSource, size int, volID string, err error) {
 
 	if config.url == "" {
 		return nil, 0, "", fmt.Errorf("failed to create glusterfs REST client, REST URL is empty")
@@ -314,7 +314,7 @@ func (p *glusterfileProvisioner) createVolumeClone(sourceVolID string, config *p
 	return volSource, cloneVolInfo.Size, cloneVolInfo.Id, nil
 }
 
-func (p *glusterfileProvisioner) createVolumeSource(cli *gcli.Client, volInfo *gapi.VolumeInfoResponse) (*v1.GlusterfsVolumeSource, error) {
+func (p *glusterfileProvisioner) createVolumeSource(cli *gcli.Client, volInfo *gapi.VolumeInfoResponse) (*v1.GlusterfsPersistentVolumeSource, error) {
 	dynamicHostIps, err := getClusterNodes(cli, volInfo.Cluster)
 	if err != nil {
 		return nil, fmt.Errorf("error [%v] when getting cluster nodes for volume %s", err, volInfo.Name)
@@ -332,7 +332,7 @@ func (p *glusterfileProvisioner) createVolumeSource(cli *gcli.Client, volInfo *g
 	}
 	klog.V(3).Infof("dynamic endpoint %v and service %v", endpoint, service)
 
-	return &v1.GlusterfsVolumeSource{
+	return &v1.GlusterfsPersistentVolumeSource{
 		EndpointsName: endpoint.Name,
 		Path:          volInfo.Name,
 		ReadOnly:      false,
@@ -355,7 +355,7 @@ func (p *glusterfileProvisioner) annotateClonedPVC(VolID string, pvc *v1.Persist
 	return err
 }
 
-func (p *glusterfileProvisioner) CreateVolume(gid *int, config *provisionerConfig, sz int) (r *v1.GlusterfsVolumeSource, size int, volID string, err error) {
+func (p *glusterfileProvisioner) CreateVolume(gid *int, config *provisionerConfig, sz int) (r *v1.GlusterfsPersistentVolumeSource, size int, volID string, err error) {
 	var clusterIDs []string
 	customVolumeName := ""
 
@@ -415,7 +415,7 @@ func (p *glusterfileProvisioner) CreateVolume(gid *int, config *provisionerConfi
 func (p *glusterfileProvisioner) RequiresFSResize() bool {
 	return false
 }
-
+/*
 func (p *glusterfileProvisioner) ExpandVolumeDevice(spec *volume.Spec, newSize resource.Quantity, oldSize resource.Quantity) (resource.Quantity, error) {
 	pvSpec := spec.PersistentVolume.Spec
 	volumeName := pvSpec.Glusterfs.Path
@@ -471,6 +471,7 @@ func (p *glusterfileProvisioner) ExpandVolumeDevice(spec *volume.Spec, newSize r
 	newVolumeSize := resource.MustParse(fmt.Sprintf("%dGi", volumeInfoRes.Size))
 	return newVolumeSize, nil
 }
+*/
 
 func (p *glusterfileProvisioner) createEndpointService(namespace string, epServiceName string, hostips []string, pvcname string) (endpoint *v1.Endpoints, service *v1.Service, err error) {
 
@@ -698,7 +699,7 @@ func GetSecretForPV(restSecretNamespace, restSecretName, volumePluginName string
 	if kubeClient == nil {
 		return secret, fmt.Errorf("Cannot get kube client")
 	}
-	secrets, err := kubeClient.Core().Secrets(restSecretNamespace).Get(restSecretName, metav1.GetOptions{})
+	secrets, err := kubeClient.CoreV1().Secrets(restSecretNamespace).Get(restSecretName, metav1.GetOptions{})
 	if err != nil {
 		return secret, err
 	}
