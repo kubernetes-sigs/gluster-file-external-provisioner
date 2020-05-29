@@ -1,14 +1,17 @@
 # github.com/asaskevich/govalidator v0.0.0-20200428143746-21a406dcc535
 ## explicit
 github.com/asaskevich/govalidator
+# github.com/auth0/go-jwt-middleware v0.0.0-20200507191422-d30d7b9ece63
+## explicit
 # github.com/beorn7/perks v1.0.1
 github.com/beorn7/perks/quantile
+# github.com/boltdb/bolt v1.3.1
+## explicit
 # github.com/cespare/xxhash/v2 v2.1.1
 github.com/cespare/xxhash/v2
 # github.com/davecgh/go-spew v1.1.1
 github.com/davecgh/go-spew/spew
 # github.com/dgrijalva/jwt-go v3.2.0+incompatible
-## explicit
 github.com/dgrijalva/jwt-go
 # github.com/go-ozzo/ozzo-validation v3.6.0+incompatible
 ## explicit
@@ -39,19 +42,23 @@ github.com/google/uuid
 github.com/googleapis/gnostic/OpenAPIv2
 github.com/googleapis/gnostic/compiler
 github.com/googleapis/gnostic/extensions
+# github.com/gorilla/context v1.1.1
+## explicit
 # github.com/hashicorp/golang-lru v0.5.1
 github.com/hashicorp/golang-lru
 github.com/hashicorp/golang-lru/simplelru
-# github.com/heketi/heketi v9.0.0+incompatible
+# github.com/heketi/heketi v9.0.1-0.20190917153846-c2e2a4ab7ab9+incompatible
 ## explicit
 github.com/heketi/heketi/client/api/go-client
 github.com/heketi/heketi/pkg/glusterfs/api
 github.com/heketi/heketi/pkg/utils
+# github.com/heketi/tests v0.0.0-20151005000721-f3775cbcefd6
+## explicit
 # github.com/imdario/mergo v0.3.5
 github.com/imdario/mergo
 # github.com/json-iterator/go v1.1.9
 github.com/json-iterator/go
-# github.com/kubernetes-sigs/sig-storage-lib-external-provisioner v4.1.0+incompatible
+# github.com/lpabon/godbc v0.1.1
 ## explicit
 # github.com/matttproud/golang_protobuf_extensions v1.0.1
 github.com/matttproud/golang_protobuf_extensions/pbutil
@@ -154,7 +161,7 @@ google.golang.org/protobuf/types/known/timestamppb
 gopkg.in/inf.v0
 # gopkg.in/yaml.v2 v2.2.8
 gopkg.in/yaml.v2
-# k8s.io/api v0.17.5
+# k8s.io/api v0.17.5 => k8s.io/api v0.17.5
 ## explicit
 k8s.io/api/admissionregistration/v1
 k8s.io/api/admissionregistration/v1beta1
@@ -196,7 +203,7 @@ k8s.io/api/settings/v1alpha1
 k8s.io/api/storage/v1
 k8s.io/api/storage/v1alpha1
 k8s.io/api/storage/v1beta1
-# k8s.io/apimachinery v0.17.5
+# k8s.io/apimachinery v0.17.5 => k8s.io/apimachinery v0.17.5
 ## explicit
 k8s.io/apimachinery/pkg/api/errors
 k8s.io/apimachinery/pkg/api/meta
@@ -242,7 +249,7 @@ k8s.io/apimachinery/pkg/version
 k8s.io/apimachinery/pkg/watch
 k8s.io/apimachinery/third_party/forked/golang/json
 k8s.io/apimachinery/third_party/forked/golang/reflect
-# k8s.io/client-go v0.17.5
+# k8s.io/client-go v0.17.5 => k8s.io/client-go v0.17.5
 ## explicit
 k8s.io/client-go/discovery
 k8s.io/client-go/informers
@@ -426,3 +433,25 @@ sigs.k8s.io/sig-storage-lib-external-provisioner/gidallocator
 sigs.k8s.io/sig-storage-lib-external-provisioner/util
 # sigs.k8s.io/yaml v1.1.0
 sigs.k8s.io/yaml
+# k8s.io/kubernetes => k8s.io/kubernetes v1.17.5
+# k8s.io/api => k8s.io/api v0.17.5
+# k8s.io/apiextensions-apiserver => k8s.io/apiextensions-apiserver v0.17.5
+# k8s.io/apimachinery => k8s.io/apimachinery v0.17.5
+# k8s.io/apiserver => k8s.io/apiserver v0.17.5
+# k8s.io/cli-runtime => k8s.io/cli-runtime v0.17.5
+# k8s.io/client-go => k8s.io/client-go v0.17.5
+# k8s.io/cloud-provider => k8s.io/cloud-provider v0.17.5
+# k8s.io/cluster-bootstrap => k8s.io/cluster-bootstrap v0.17.5
+# k8s.io/code-generator => k8s.io/code-generator v0.17.5
+# k8s.io/component-base => k8s.io/component-base v0.17.5
+# k8s.io/cri-api => k8s.io/cri-api v0.17.5
+# k8s.io/csi-translation-lib => k8s.io/csi-translation-lib v0.17.5
+# k8s.io/kube-aggregator => k8s.io/kube-aggregator v0.17.5
+# k8s.io/kube-controller-manager => k8s.io/kube-controller-manager v0.17.5
+# k8s.io/kube-proxy => k8s.io/kube-proxy v0.17.5
+# k8s.io/kube-scheduler => k8s.io/kube-scheduler v0.17.5
+# k8s.io/kubectl => k8s.io/kubectl v0.17.5
+# k8s.io/kubelet => k8s.io/kubelet v0.17.5
+# k8s.io/legacy-cloud-providers => k8s.io/legacy-cloud-providers v0.17.5
+# k8s.io/metrics => k8s.io/metrics v0.17.5
+# k8s.io/sample-apiserver => k8s.io/sample-apiserver v0.17.5
