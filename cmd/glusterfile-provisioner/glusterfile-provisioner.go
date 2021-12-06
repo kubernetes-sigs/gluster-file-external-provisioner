@@ -25,12 +25,12 @@ import (
 
 	gcli "github.com/heketi/heketi/client/api/go-client"
 	gapi "github.com/heketi/heketi/pkg/glusterfs/api"
-	"sigs.k8s.io/sig-storage-lib-external-provisioner/controller"
-	"sigs.k8s.io/sig-storage-lib-external-provisioner/gidallocator"
-	"sigs.k8s.io/sig-storage-lib-external-provisioner/util"
 	"github.com/pborman/uuid"
 	"k8s.io/api/core/v1"
 	"k8s.io/apimachinery/pkg/api/errors"
+	"sigs.k8s.io/sig-storage-lib-external-provisioner/controller"
+	"sigs.k8s.io/sig-storage-lib-external-provisioner/gidallocator"
+	"sigs.k8s.io/sig-storage-lib-external-provisioner/util"
 	//"k8s.io/apimachinery/pkg/api/resource"
 	metav1 "k8s.io/apimachinery/pkg/apis/meta/v1"
 	"k8s.io/apimachinery/pkg/util/wait"
@@ -415,6 +415,7 @@ func (p *glusterfileProvisioner) CreateVolume(gid *int, config *provisionerConfi
 func (p *glusterfileProvisioner) RequiresFSResize() bool {
 	return false
 }
+
 /*
 func (p *glusterfileProvisioner) ExpandVolumeDevice(spec *volume.Spec, newSize resource.Quantity, oldSize resource.Quantity) (resource.Quantity, error) {
 	pvSpec := spec.PersistentVolume.Spec
