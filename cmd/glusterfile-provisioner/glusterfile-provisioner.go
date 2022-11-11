@@ -88,7 +88,7 @@ type provisionerConfig struct {
 	thinPoolSnapFactor float32
 }
 
-//NewglusterfileProvisioner create a new provisioner.
+// NewglusterfileProvisioner create a new provisioner.
 func NewglusterfileProvisioner(client kubernetes.Interface, id string) controller.Provisioner {
 	return &glusterfileProvisioner{
 		client:    client,
